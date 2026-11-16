@@ -1,2 +1,0 @@
-# HummingBot
-Bounty Draft

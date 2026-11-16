@@ -1,0 +1,92 @@
+Description
+This bounty is for developing and adding PopDEX Perpetual connectors to the official Hummingbot open-source codebase.
+
+PopDEX is a trader-first perp DEX built for capital efficiency, execution quality, and 100% protocol value return to real contributors.
+
+The connector must support PopDEX’s API architecture, including signed transactions, account abstraction (account index), and WebSocket streaming.
+
+PopDEX API documentation:
+https://popdex.xyz/docs/product-docs/intro
+
+https://popdex.xyz/docs/api/intro
+
+Hummingbot CLOB connector documentation:
+https://hummingbot.org/connectors/clob/
+
+Hummingbot connector debug guide:
+https://hummingbot.org/developers/connectors/debug/
+
+Hummingbot contribution guidelines:
+https://github.com/hummingbot/hummingbot/blob/master/CONTRIBUTING.md
+
+🎯 Bounty Goals
+Build and maintain official Hummingbot connectors for:
+
+PopDEX Perpetual
+Ensure compatibility with Hummingbot v2.1+ connector standards
+
+Add Candles (if available)
+
+Connector docs to include for hummingbot-site repo
+
+Add full unit and integration test coverage
+
+Work with the PopDEX team to validate API usage and behavior. PopDEX Team TG Group - https://t.me/+bLR7RpCN0yg2NmMx
+
+✅ Deliverables & Acceptance Criteria
+Connector Implementation
+The PopDEX Perpetual connectors must include:
+
+Core Trading Functionality
+Place limit and market orders via signed transactions
+Cancel and modify orders
+Fetch order status and trade history
+Handle client order IDs
+Account & Balance
+Fetch account balances and positions
+Support sub-accounts (account index model)
+Handle collateral and margin (for perps)
+Perpetual Features
+Funding rate handling (https://popdex.xyz/docs/api/market/Get-Current-Funding-Rate)
+Position tracking and PnL
+Margin requirements and liquidation logic awareness
+Market Data
+Orderbook snapshots and updates
+Trade streams
+Ticker data
+WebSocket Integration
+Subscribe to:
+
+Orderbook updates
+Trades
+User events (orders, fills, positions)
+Code & PR Requirements
+Code must follow Hummingbot connector patterns and naming conventions
+Submitted via a single pull request to the Hummingbot repository
+Must pass all CI checks
+Must follow contribution guidelines:
+https://github.com/hummingbot/hummingbot/blob/master/CONTRIBUTING.md
+Reviewed and approved by Hummingbot maintainers
+
+📞 Collaboration With PopDEX
+Developer may need to:
+
+Work with PopDEX team on:
+
+API signing and auth flows
+Edge cases (nonce desync, failed tx, batching)
+
+Validate:
+Order execution correctness
+Funding & liquidation behavior
+WebSocket message formats
+🚀 Impact
+This connector enables Hummingbot users to trade on a next-generation ZK exchange, combining:
+
+CEX-level performance
+On-chain verification
+This is a high-impact integration due to PopDEX’s unique architecture and growing ecosystem.
+
+Bounty
+Sponsor: PopDEX
+Developer portion: 2000 USDT
