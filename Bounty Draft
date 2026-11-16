@@ -1,92 +1,131 @@
-Description
-This bounty is for developing and adding PopDEX Perpetual connectors to the official Hummingbot open-source codebase.
+# PopDEX Perpetual Connector Bounty
 
-PopDEX is a trader-first perp DEX built for capital efficiency, execution quality, and 100% protocol value return to real contributors.
+## Description
 
-The connector must support PopDEX’s API architecture, including signed transactions, account abstraction (account index), and WebSocket streaming.
+Develop and add an official **PopDEX Perpetual** connector to the Hummingbot codebase.
 
-PopDEX API documentation:
-https://popdex.xyz/docs/product-docs/intro
+PopDEX is a non-custodial perpetual DEX with an on-chain order book. All order placement, amendment, and cancellation are signed EVM transactions submitted to precompile contracts via Web3 RPC. Trading uses an authorized **Agent Key** (not the main wallet key) with **Timestamp Nonce**. REST is used for queries; WebSockets provide real-time data.
 
-https://popdex.xyz/docs/api/intro
+### Key Contracts
+- Order: `0x0000000000000000000000000000000000001000`
+- Account: `0x0000000000000000000000000000000000001008`
+- UserConfig: `0x0000000000000000000000000000000000001009`
 
-Hummingbot CLOB connector documentation:
-https://hummingbot.org/connectors/clob/
+### References
+- API docs: https://popdex.xyz/docs/api/intro
+- Domains: https://popdex.xyz/docs/api/domain
+- Rate limits: https://popdex.xyz/docs/api/rate-limit
+- WebSocket: https://popdex.xyz/docs/api/websocket/intro
+- How to Trade via API: https://popdex.xyz/docs/product-docs/onboarding/how-to-trade-via-api
+- Agent Accounts: https://popdex.xyz/docs/product-docs/chain/agent-key
+- Nonces: https://popdex.xyz/docs/product-docs/chain/nonces
+- Hummingbot Perp Connector v2.1: https://hummingbot.org/connectors/connectors/perp-connector-checklist/
+- Contribution guidelines: https://github.com/hummingbot/hummingbot/blob/master/CONTRIBUTING.md
 
-Hummingbot connector debug guide:
-https://hummingbot.org/developers/connectors/debug/
+## Bounty Details
 
-Hummingbot contribution guidelines:
-https://github.com/hummingbot/hummingbot/blob/master/CONTRIBUTING.md
+- **Sponsor**: PopDEX
+- **Payment**: 2000 USDT
+- **Scope**: Full implementation of the `popdex_perpetual` connector meeting the acceptance criteria below
+- **Mandatory**: All users must join PopDEX via invite link **PD070000**
 
-🎯 Bounty Goals
-Build and maintain official Hummingbot connectors for:
+## Goals
 
-PopDEX Perpetual
-Ensure compatibility with Hummingbot v2.1+ connector standards
+- Connector name: `popdex_perpetual`
+- Location: `hummingbot/connector/derivative/popdex_perpetual/`
+- Compatible with Hummingbot v2.1+ (V2 Strategies)
+- Mainnet + testnet support
+- Candles support
+- Full unit + integration tests
+- Documentation PR to hummingbot-site
+- Collaboration with PopDEX team (Telegram: https://t.me/+bLR7RpCN0yg2NmMx)
 
-Add Candles (if available)
+## Acceptance Criteria
 
-Connector docs to include for hummingbot-site repo
+### Environments
 
-Add full unit and integration test coverage
+| Environment | REST Base | WebSocket | Web3 RPC | Chain ID |
+|-------------|-----------|-----------|----------|----------|
+| Mainnet | `https://api.popdex.xyz` | `wss://ws.popdex.xyz/v1/ws/public` | `https://api.popdex.xyz/api/v1/web3/rpc` | 2184 |
+| Testnet | `https://testnet-api.popdex.xyz` | `wss://testnet-ws.popdex.xyz/v1/ws/public` | `https://testnet-app.popdex.xyz/api/v1/web3/rpc` | 34952 |
 
-Work with the PopDEX team to validate API usage and behavior. PopDEX Team TG Group - https://t.me/+bLR7RpCN0yg2NmMx
+### Credentials
 
-✅ Deliverables & Acceptance Criteria
-Connector Implementation
-The PopDEX Perpetual connectors must include:
+- `popdex_perpetual_account_address` (main wallet / walletId)
+- `popdex_perpetual_agent_private_key` (Agent Key only)
+- Network selector (mainnet / testnet)
+- Optional: sub-account index, builder address + fee rate
 
-Core Trading Functionality
-Place limit and market orders via signed transactions
-Cancel and modify orders
-Fetch order status and trade history
-Handle client order IDs
-Account & Balance
-Fetch account balances and positions
-Support sub-accounts (account index model)
-Handle collateral and margin (for perps)
-Perpetual Features
-Funding rate handling (https://popdex.xyz/docs/api/market/Get-Current-Funding-Rate)
-Position tracking and PnL
-Margin requirements and liquidation logic awareness
-Market Data
-Orderbook snapshots and updates
-Trade streams
-Ticker data
-WebSocket Integration
-Subscribe to:
+Main wallet private key must never be stored or used.
 
-Orderbook updates
-Trades
-User events (orders, fills, positions)
-Code & PR Requirements
-Code must follow Hummingbot connector patterns and naming conventions
-Submitted via a single pull request to the Hummingbot repository
-Must pass all CI checks
-Must follow contribution guidelines:
-https://github.com/hummingbot/hummingbot/blob/master/CONTRIBUTING.md
-Reviewed and approved by Hummingbot maintainers
+### Core Trading
 
-📞 Collaboration With PopDEX
-Developer may need to:
+- Place limit and market orders via Agent Key + Timestamp Nonce signed transactions to the Order contract
+- Cancel and amend orders
+- Support client order IDs (`clientOid`, max 32 chars, `[0-9a-zA-Z\-+_,#]`)
+- Fetch pending orders, order details, history, and fills
+- Handle receipts, failures, nonce desync, and batch operations
+- Do not rely on `eth_call` / `eth_estimateGas` for EIP-712 simulation
 
-Work with PopDEX team on:
+### Account & Margin
 
-API signing and auth flows
-Edge cases (nonce desync, failed tx, batching)
+- Account overview, balances, collateral, equity, available margin
+- Sub-accounts / account index
+- Position modes (`Oneway` / `Hedge`) and margin modes (`Cross` / `Isolated`)
+- Leverage and position mode setting via UserConfig contract
+- Account activation awareness (deposit required before trading)
 
-Validate:
-Order execution correctness
-Funding & liquidation behavior
-WebSocket message formats
-🚀 Impact
-This connector enables Hummingbot users to trade on a next-generation ZK exchange, combining:
+### Perpetual Features
 
-CEX-level performance
-On-chain verification
-This is a high-impact integration due to PopDEX’s unique architecture and growing ecosystem.
+- Current + historical funding rates
+- Position tracking, PnL, liquidation price, ADL rank
+- Funding and liquidation history
 
-Bounty
-Sponsor: PopDEX
-Developer portion: 2000 USDT
+### Market Data
+
+- Symbols and trading rules
+- Order book snapshots + updates
+- Trades, tickers, candles, open interest
+
+### WebSocket
+
+Single public endpoint. Support public (order book, trades, tickers, candles, liquidations) and private channels keyed by `walletId` (orders, fills, positions, account, account config, trigger orders, funds transfer).
+
+- Heartbeat: `"ping"` every 30s / `"pong"`
+- Reconnection + REST reconciliation after disconnect
+
+### Rate Limits
+
+- Read: 1,200 weight / 60s per IP (`X-RateLimit-Weight-Used`)
+- Write: wallet-based quota on target address (base 10k write + 10k cancel + volume, cap 500k)
+- `eth_sendRawTransaction` = 10 weight
+- Handle 429, `Retry-After`, and JSON-RPC errors `-32001` / `-32002`
+- Use Hummingbot API Throttler
+
+### Error Handling
+
+- REST envelope: `{code, msg, data}`
+- On-chain failures via receipt + failure lookup
+- Historical data: 90-day max / 7-day query windows, cursor pagination
+
+### Code Requirements
+
+- Follow Perp Connector v2.1 checklist and QA checklist
+- Single PR to Hummingbot `development` branch
+- Pass CI and coverage
+- Unit tests (REST, WS, signing, tx submission) + integration tests
+- Documentation PR to hummingbot-site
+- Comments on non-standard signing / on-chain logic
+- HGP on Snapshot if required for official inclusion
+
+### Additional Notes
+
+- Testnet faucet available
+- Recommended deposit path is Top-up Address (SIWE JWT)
+- Builder fees optional (default to zero)
+- Leverage / position mode changes require on-chain UserConfig transactions
+- Accounts inactive until deposit is credited
+
+## Collaboration
+
+Work with PopDEX team on Agent Key flows, Timestamp Nonce, WebSocket formats, and validation of orders, funding, positions, and liquidations.
